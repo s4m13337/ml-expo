@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris</title>
+    <style>
+        body {
+            margin: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Iris Flower Classifier</h1> 
+
+    <h2>Parameters</h2>
+    <label for="petal-length">Petal length</label> <br>
+    <input type="range" min="40" max="80" value="1" id="petal-length"> 
+    <span id="petal-length-value"></span><br>
+    <label for="petal-width">Petal width</label> <br>
+    <input type="range" min="20" max="45" value="1" id="petal-width">
+    <span id="petal-width-value"></span><br>
+    <label for="sepal-length">Sepal length</label> <br>
+    <input type="range" min="10" max="70" value="1" id="sepal-length">
+    <span id="sepal-length-value"></span><br>
+    <label for="sepal-width">Sepal width</label> <br>
+    <input type="range" min="1" max="25" value="1" id="sepal-width">
+    <span id="sepal-width-value"></span>
+
+    <h2>Prediction</h2>
+    <span id="prediction"></span><br>
+    <img src="" width="250" id="prediction-image">
+
+
+    <script>
+        let petalLengthSlider = document.getElementById("petal-length")
+        let petalWidthSlider = document.getElementById("petal-width")
+        let sepalLengthSlider = document.getElementById("sepal-length")
+        let sepalWidthSlider = document.getElementById("sepal-width")
+        let petalLengthValue = document.getElementById("petal-length-value")
+        let petalWidthValue= document.getElementById("petal-width-value")
+        let sepalLengthValue = document.getElementById("sepal-length-value")
+        let sepalWidthValue= document.getElementById("sepal-width-value")
+        let prediction = document.getElementById("prediction")
+        let predictionImage = document.getElementById("prediction-image")
+
+        petalLengthValue.innerHTML = petalLengthSlider.value/10
+        petalWidthValue.innerHTML = petalWidthSlider.value/10
+        sepalLengthValue.innerHTML = sepalLengthSlider.value/10
+        sepalWidthValue.innerHTML = sepalWidthSlider.value/10
+
+        function predict(){
+            data = {
+                'petalLength': petalLengthSlider.value/10,
+                'petalWidth': petalWidthSlider.value/10,
+                'sepalLength': sepalLengthSlider.value/10,
+                'sepalWidth': sepalWidthSlider.value/10
+            }
+
+            fetch('http://localhost:5000/iris', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json;charset=utf-8'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                prediction.innerHTML = result.name
+                predictionImage.src = result.image
+            })
+
+        }
+
+        petalLengthSlider.oninput = function() {
+            petalLengthValue.innerHTML = this.value/10
+        }
+
+        petalWidthSlider.oninput = function() {
+            petalWidthValue.innerHTML = this.value/10
+        }
+
+        sepalLengthSlider.oninput = function() {
+            sepalLengthValue.innerHTML = this.value/10
+        }
+
+        sepalWidthSlider.oninput = function() {
+            sepalWidthValue.innerHTML = this.value/10
+        }
+
+        petalLengthSlider.onmouseup = () => predict()
+        petalWidthSlider.onmouseup = () => predict()
+        sepalLengthSlider.onmouseup = () => predict()
+        sepalWidthSlider.onmouseup = () => predict()
+
+            
+    </script>
+</body>
+</html>
